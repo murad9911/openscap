@@ -1,0 +1,15 @@
+//Install required package
+yum install openscap-scanner 
+yum install scap-security-guide
+yum install bzip2
+
+
+//Displaying information about SCAP source data streams
+oscap info /usr/share/xml/scap/ssg/content/ssg-rhel8-oval.xml
+oscap info /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml  --profile xccdf_org.ssgproject.content_profile_cis
+
+//Scanning using SCAP source data streams
+oscap xccdf eval  --profile xccdf_org.ssgproject.content_profile_cis_server_l1  --results-arf arf.xml  --report report.html /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
+
+//Generate remedation yml file
+oscap xccdf generate fix --fix-type ansible --output playbook-rhel8.yml --result-id "xccdf_org.open-scap_testresult_xccdf_org.ssgproject.content_profile_cis_server_l1" --fetch-remote-resources  arf.xml
